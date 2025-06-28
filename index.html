@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EcoLearn Student Portal - AI-powered learning platform untuk mahasiswa digital business">
+    <meta name="keywords" content="ecolearn, student portal, ai learning, digital business">
+    <meta name="author" content="Akademi Digital Bandung">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    
+    <!-- Preconnect untuk performance -->
+    <link rel="preconnect" href="https://adbecolearn.github.io">
+    
+    <!-- Load EcoLearn Shared Styles -->
+    <link rel="stylesheet" href="https://adbecolearn.github.io/ecolearn-shared/styles/base/variables.css">
+    <link rel="stylesheet" href="https://adbecolearn.github.io/ecolearn-shared/styles/components/button.css">
+    
+    <!-- Local Styles -->
+    <link rel="stylesheet" href="assets/css/student.css">
+    
+    <title>EcoLearn Student Portal</title>
+    
+    <!-- Carbon tracking meta -->
+    <meta name="carbon-budget" content="0.5g">
+    <meta name="performance-target" content="2s">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <img src="assets/images/ecolearn-logo.svg" alt="EcoLearn" width="120" height="30">
+            </div>
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Initializing AI Learning Environment...</p>
+        </div>
+    </div>
+
+    <!-- Carbon Tracker Display -->
+    <div id="carbon-tracker" class="carbon-tracker">
+        <div class="carbon-status">
+            <span class="carbon-indicator"></span>
+            <span class="carbon-text">0.0g CO2</span>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app-container" style="display: none;">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="assets/images/ecolearn-logo.svg" alt="EcoLearn" class="sidebar-logo" width="100" height="25">
+                <button class="sidebar-toggle" aria-label="Toggle sidebar">
+                    <span class="toggle-icon">←</span>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h3 class="nav-section-title">Learning</h3>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#dashboard" class="nav-link active" data-page="dashboard">
+                                <span class="nav-icon">📊</span>
+                                <span class="nav-text">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#ai-chat" class="nav-link" data-page="ai-chat">
+                                <span class="nav-icon">🤖</span>
+                                <span class="nav-text">AI Assistant</span>
+                                <span class="nav-badge">New</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#courses" class="nav-link" data-page="courses">
+                                <span class="nav-icon">📚</span>
+                                <span class="nav-text">My Courses</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#progress" class="nav-link" data-page="progress">
+                                <span class="nav-icon">📈</span>
+                                <span class="nav-text">Progress</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <h3 class="nav-section-title">Tools</h3>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#assignments" class="nav-link" data-page="assignments">
+                                <span class="nav-icon">📝</span>
+                                <span class="nav-text">Assignments</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#resources" class="nav-link" data-page="resources">
+                                <span class="nav-icon">📁</span>
+                                <span class="nav-text">Resources</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#calendar" class="nav-link" data-page="calendar">
+                                <span class="nav-icon">📅</span>
+                                <span class="nav-text">Calendar</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <span class="avatar-text" id="userInitials">JS</span>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name" id="userName">John Student</span>
+                        <span class="user-id" id="userStudentId">ADB001</span>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <span class="logout-icon">🚪</span>
+                    <span class="logout-text">Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn" aria-label="Toggle mobile menu">
+                        <span class="menu-line"></span>
+                        <span class="menu-line"></span>
+                        <span class="menu-line"></span>
+                    </button>
+                    <h1 class="page-title" id="pageTitle">Dashboard</h1>
+                </div>
+                <div class="header-right">
+                    <div class="ai-status">
+                        <span class="ai-indicator" id="aiIndicator"></span>
+                        <span class="ai-text" id="aiStatus">AI Ready</span>
+                    </div>
+                    <button class="notifications-btn" id="notificationsBtn">
+                        <span class="notification-icon">🔔</span>
+                        <span class="notification-badge" id="notificationBadge">3</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Page Content Container -->
+            <div class="content-container">
+                <!-- Dashboard Page -->
+                <div id="dashboard-page" class="page-content active">
+                    <div class="dashboard-grid">
+                        <!-- Welcome Card -->
+                        <div class="dashboard-card welcome-card">
+                            <div class="card-header">
+                                <h2 class="card-title">Welcome Back!</h2>
+                                <p class="card-subtitle">Ready to continue your learning journey?</p>
+                            </div>
+                            <div class="card-content">
+                                <div class="welcome-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-number" id="totalCourses">6</span>
+                                        <span class="stat-label">Active Courses</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-number" id="completedAssignments">12</span>
+                                        <span class="stat-label">Completed</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-number" id="currentStreak">7</span>
+                                        <span class="stat-label">Day Streak</span>
+                                    </div>
+                                </div>
+                                <button class="quick-action-btn" id="continueLastCourse">
+                                    <span class="btn-text">Continue Last Course</span>
+                                    <span class="btn-icon">→</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- AI Assistant Quick Access -->
+                        <div class="dashboard-card ai-card">
+                            <div class="card-header">
+                                <h3 class="card-title">AI Assistant</h3>
+                                <div class="ai-model-info">
+                                    <span class="model-name" id="currentAiModel">GPT-4</span>
+                                    <span class="model-status online">Online</span>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="ai-suggestion">
+                                    <p class="suggestion-text">
+                                        "Based on your progress, I recommend focusing on 
+                                        <strong>Social Media Strategy</strong> next. Would you like to start?"
+                                    </p>
+                                </div>
+                                <div class="ai-actions">
+                                    <button class="ai-action-btn primary" id="startAiChat">
+                                        <span class="btn-icon">💬</span>
+                                        <span class="btn-text">Start Chat</span>
+                                    </button>
+                                    <button class="ai-action-btn secondary" id="viewRecommendations">
+                                        <span class="btn-icon">💡</span>
+                                        <span class="btn-text">View All</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="dashboard-card activity-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Recent Activity</h3>
+                                <button class="view-all-btn">View All</button>
+                            </div>
+                            <div class="card-content">
+                                <div class="activity-list" id="activityList">
+                                    <div class="activity-item">
+                                        <div class="activity-icon">📚</div>
+                                        <div class="activity-content">
+                                            <p class="activity-text">Completed "Digital Marketing Fundamentals" quiz</p>
+                                            <span class="activity-time">2 hours ago</span>
+                                        </div>
+                                        <div class="activity-score">95%</div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon">🤖</div>
+                                        <div class="activity-content">
+                                            <p class="activity-text">AI session: Content Marketing Strategy</p>
+                                            <span class="activity-time">1 day ago</span>
+                                        </div>
+                                        <div class="activity-badge">New insights</div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon">📝</div>
+                                        <div class="activity-content">
+                                            <p class="activity-text">Submitted assignment: Market Analysis</p>
+                                            <span class="activity-time">2 days ago</span>
+                                        </div>
+                                        <div class="activity-status pending">Pending</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Overview -->
+                        <div class="dashboard-card progress-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Learning Progress</h3>
+                                <div class="progress-period">
+                                    <select class="period-select" id="progressPeriod">
+                                        <option value="week">This Week</option>
+                                        <option value="month">This Month</option>
+                                        <option value="semester">This Semester</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="progress-overview">
+                                    <div class="progress-circle">
+                                        <svg class="progress-svg" viewBox="0 0 100 100">
+                                            <circle cx="50" cy="50" r="45" class="progress-bg"></circle>
+                                            <circle cx="50" cy="50" r="45" class="progress-fill" id="overallProgressCircle"></circle>
+                                        </svg>
+                                        <div class="progress-text">
+                                            <span class="progress-percentage" id="overallProgress">78%</span>
+                                            <span class="progress-label">Complete</span>
+                                        </div>
+                                    </div>
+                                    <div class="progress-details">
+                                        <div class="progress-item">
+                                            <span class="progress-course">Digital Marketing</span>
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 85%"></div>
+                                            </div>
+                                            <span class="progress-value">85%</span>
+                                        </div>
+                                        <div class="progress-item">
+                                            <span class="progress-course">E-Commerce</span>
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 72%"></div>
+                                            </div>
+                                            <span class="progress-value">72%</span>
+                                        </div>
+                                        <div class="progress-item">
+                                            <span class="progress-course">Business Analytics</span>
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 68%"></div>
+                                            </div>
+                                            <span class="progress-value">68%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Upcoming Deadlines -->
+                        <div class="dashboard-card deadlines-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Upcoming Deadlines</h3>
+                                <span class="urgency-indicator high">3 urgent</span>
+                            </div>
+                            <div class="card-content">
+                                <div class="deadline-list" id="deadlineList">
+                                    <div class="deadline-item urgent">
+                                        <div class="deadline-date">
+                                            <span class="date-day">29</span>
+                                            <span class="date-month">Jun</span>
+                                        </div>
+                                        <div class="deadline-content">
+                                            <h4 class="deadline-title">Social Media Campaign Project</h4>
+                                            <p class="deadline-course">Digital Marketing</p>
+                                        </div>
+                                        <div class="deadline-time">
+                                            <span class="time-left">1 day left</span>
+                                        </div>
+                                    </div>
+                                    <div class="deadline-item warning">
+                                        <div class="deadline-date">
+                                            <span class="date-day">02</span>
+                                            <span class="date-month">Jul</span>
+                                        </div>
+                                        <div class="deadline-content">
+                                            <h4 class="deadline-title">Market Research Analysis</h4>
+                                            <p class="deadline-course">Business Analytics</p>
+                                        </div>
+                                        <div class="deadline-time">
+                                            <span class="time-left">4 days left</span>
+                                        </div>
+                                    </div>
+                                    <div class="deadline-item normal">
+                                        <div class="deadline-date">
+                                            <span class="date-day">05</span>
+                                            <span class="date-month">Jul</span>
+                                        </div>
+                                        <div class="deadline-content">
+                                            <h4 class="deadline-title">E-commerce Platform Review</h4>
+                                            <p class="deadline-course">E-Commerce</p>
+                                        </div>
+                                        <div class="deadline-time">
+                                            <span class="time-left">1 week left</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Carbon Impact -->
+                        <div class="dashboard-card carbon-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Carbon Impact</h3>
+                                <div class="carbon-badge eco">
+                                    <span class="badge-icon">🌱</span>
+                                    <span class="badge-text">Eco Learner</span>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="carbon-stats">
+                                    <div class="carbon-stat">
+                                        <span class="stat-value" id="sessionCarbon">0.23g</span>
+                                        <span class="stat-label">Session CO2</span>
+                                    </div>
+                                    <div class="carbon-stat">
+                                        <span class="stat-value" id="totalCarbon">2.1g</span>
+                                        <span class="stat-label">Total CO2</span>
+                                    </div>
+                                    <div class="carbon-stat">
+                                        <span class="stat-value" id="carbonSaved">15.7g</span>
+                                        <span class="stat-label">CO2 Saved</span>
+                                    </div>
+                                </div>
+                                <div class="carbon-progress">
+                                    <div class="carbon-bar">
+                                        <div class="carbon-fill" style="width: 46%"></div>
+                                    </div>
+                                    <p class="carbon-text">46% of daily carbon budget used</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Chat Page -->
+                <div id="ai-chat-page" class="page-content">
+                    <div class="chat-container">
+                        <!-- Chat Header -->
+                        <div class="chat-header">
+                            <div class="chat-ai-info">
+                                <div class="ai-avatar">
+                                    <span class="avatar-icon">🤖</span>
+                                </div>
+                                <div class="ai-details">
+                                    <h2 class="ai-name">EcoLearn AI Assistant</h2>
+                                    <p class="ai-description">Personalized learning companion powered by <span id="chatAiModel">GPT-4</span></p>
+                                </div>
+                            </div>
+                            <div class="chat-controls">
+                                <button class="chat-control-btn" id="clearChatBtn" title="Clear chat">
+                                    <span class="control-icon">🗑️</span>
+                                </button>
+                                <button class="chat-control-btn" id="exportChatBtn" title="Export chat">
+                                    <span class="control-icon">📤</span>
+                                </button>
+                                <button class="chat-control-btn" id="settingsBtn" title="Settings">
+                                    <span class="control-icon">⚙️</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Chat Messages -->
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="message ai-message">
+                                <div class="message-avatar">
+                                    <span class="avatar-icon">🤖</span>
+                                </div>
+                                <div class="message-content">
+                                    <div class="message-header">
+                                        <span class="message-sender">EcoLearn AI</span>
+                                        <span class="message-time">Just now</span>
+                                    </div>
+                                    <div class="message-text">
+                                        <p>Hello! I'm your AI learning assistant. I'm here to help you with your Digital Business studies. 
+                                        Based on your current progress, I can see you're doing great in Digital Marketing! 🎉</p>
+                                        <p>What would you like to learn about today?</p>
+                                    </div>
+                                    <div class="message-suggestions">
+                                        <button class="suggestion-chip" data-suggestion="Explain social media ROI calculation">
+                                            Social Media ROI
+                                        </button>
+                                        <button class="suggestion-chip" data-suggestion="Help me with content marketing strategy">
+                                            Content Strategy
+                                        </button>
+                                        <button class="suggestion-chip" data-suggestion="What are the latest e-commerce trends?">
+                                            E-commerce Trends
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Input -->
+                        <div class="chat-input-container">
+                            <div class="chat-input-wrapper">
+                                <button class="attachment-btn" id="attachmentBtn" title="Attach file">
+                                    <span class="attachment-icon">📎</span>
+                                </button>
+                                <textarea 
+                                    class="chat-input" 
+                                    id="chatInput" 
+                                    placeholder="Ask me anything about your courses..."
+                                    rows="1"
+                                ></textarea>
+                                <button class="send-btn" id="sendBtn" disabled>
+                                    <span class="send-icon">➤</span>
+                                </button>
+                            </div>
+                            <div class="input-footer">
+                                <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                                    <span class="typing-text">AI is typing</span>
+                                    <div class="typing-dots">
+                                        <span class="dot"></span>
+                                        <span class="dot"></span>
+                                        <span class="dot"></span>
+                                    </div>
+                                </div>
+                                <div class="input-info">
+                                    <span class="carbon-info">💚 Low carbon AI response</span>
+                                    <span class="model-info">Powered by <span id="inputAiModel">GPT-4</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other pages will be loaded dynamically -->
+                <div id="courses-page" class="page-content">
+                    <div class="page-placeholder">
+                        <h2>My Courses</h2>
+                        <p>Course management interface coming soon...</p>
+                    </div>
+                </div>
+
+                <div id="progress-page" class="page-content">
+                    <div class="page-placeholder">
+                        <h2>Learning Progress</h2>
+                        <p>Detailed progress analytics coming soon...</p>
+                    </div>
+                </div>
+
+                <div id="assignments-page" class="page-content">
+                    <div class="page-placeholder">
+                        <h2>Assignments</h2>
+                        <p>Assignment management interface coming soon...</p>
+                    </div>
+                </div>
+
+                <div id="resources-page" class="page-content">
+                    <div class="page-placeholder">
+                        <h2>Learning Resources</h2>
+                        <p>Resource library coming soon...</p>
+                    </div>
+                </div>
+
+                <div id="calendar-page" class="page-content">
+                    <div class="page-placeholder">
+                        <h2>Academic Calendar</h2>
+                        <p>Calendar interface coming soon...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Load EcoLearn Shared Libraries -->
+    <script type="module" src="assets/js/student.js"></script>
+</body>
+</html>
