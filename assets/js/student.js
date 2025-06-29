@@ -48,19 +48,8 @@ class StudentApp {
      */
     async init() {
         try {
-            // TEMPORARY: Skip authentication for testing
-            console.log('⚠️ SKIPPING AUTH CHECK FOR TESTING');
-            // await this.checkAuthentication();
-
-            // Mock user data for testing
-            this.currentUser = {
-                id: 'test-student-001',
-                email: 'test@digitalbdg.ac.id',
-                name: 'Test Student',
-                role: 'student',
-                program: 'Digital Business'
-            };
-            console.log('👤 Using mock user data:', this.currentUser);
+            // Check authentication
+            await this.checkAuthentication();
 
             // Setup DOM references
             this.setupDOM();
@@ -97,9 +86,6 @@ class StudentApp {
      * Check user authentication
      */
     async checkAuthentication() {
-        console.log('⚠️ checkAuthentication() called but DISABLED for testing');
-        return; // DISABLED for testing
-
         if (!authUtils.isAuthenticated()) {
             window.location.href = 'https://adbecolearn.github.io/ecolearn-auth/';
             return;
@@ -811,8 +797,9 @@ class StudentApp {
         const metrics = carbonTracker.getMetrics();
         const budget = carbonTracker.getCarbonBudget();
 
-        // Update carbon text
-        const carbonValue = `${metrics.totalCarbonGrams.toFixed(3)}g CO2`;
+        // Update carbon text with safe fallback
+        const totalCarbon = metrics?.totalCarbonGrams || 0;
+        const carbonValue = `${totalCarbon.toFixed(3)}g CO2`;
 
         if (this.carbonText) {
             this.carbonText.textContent = carbonValue;
@@ -820,15 +807,17 @@ class StudentApp {
 
         // Update session carbon in dashboard
         if (this.sessionCarbon) {
-            this.sessionCarbon.textContent = `${metrics.sessionCarbonGrams.toFixed(2)}g`;
+            const carbonValue = metrics?.sessionCarbonGrams || 0;
+            this.sessionCarbon.textContent = `${carbonValue.toFixed(2)}g`;
         }
 
         // Update carbon indicator color
         if (this.carbonIndicator) {
             this.carbonIndicator.className = 'carbon-indicator';
-            if (budget.status === 'warning') {
+            const budgetStatus = budget?.status || 'normal';
+            if (budgetStatus === 'warning') {
                 this.carbonIndicator.classList.add('warning');
-            } else if (budget.status === 'critical') {
+            } else if (budgetStatus === 'critical') {
                 this.carbonIndicator.classList.add('critical');
             }
         }
