@@ -794,21 +794,44 @@ class StudentApp {
      * Update carbon footprint display
      */
     updateCarbonDisplay() {
-        const metrics = carbonTracker.getMetrics();
-        const budget = carbonTracker.getCarbonBudget();
+        try {
+            console.log('🔧 updateCarbonDisplay called');
 
-        // Update carbon text with safe fallback
-        const totalCarbon = metrics?.totalCarbonGrams || 0;
-        const carbonValue = `${totalCarbon.toFixed(3)}g CO2`;
+            // Check if carbonTracker exists and has methods
+            if (!carbonTracker) {
+                console.error('❌ carbonTracker is undefined');
+                return;
+            }
 
-        if (this.carbonText) {
-            this.carbonText.textContent = carbonValue;
-        }
+            if (typeof carbonTracker.getMetrics !== 'function') {
+                console.error('❌ carbonTracker.getMetrics is not a function');
+                return;
+            }
 
-        // Update session carbon in dashboard
-        if (this.sessionCarbon) {
-            const carbonValue = metrics?.sessionCarbonGrams || 0;
-            this.sessionCarbon.textContent = `${carbonValue.toFixed(2)}g`;
+            const metrics = carbonTracker.getMetrics();
+            const budget = carbonTracker.getCarbonBudget();
+
+            console.log('📊 Metrics:', metrics);
+            console.log('💰 Budget:', budget);
+
+            // Update carbon text with safe fallback
+            const totalCarbon = metrics?.totalCarbonGrams || 0;
+            console.log('🔢 totalCarbon:', totalCarbon, 'type:', typeof totalCarbon);
+            const carbonValue = `${totalCarbon.toFixed(3)}g CO2`;
+
+            if (this.carbonText) {
+                this.carbonText.textContent = carbonValue;
+            }
+
+            // Update session carbon in dashboard
+            if (this.sessionCarbon) {
+                const sessionCarbon = metrics?.sessionCarbonGrams || 0;
+                console.log('🔢 sessionCarbon:', sessionCarbon, 'type:', typeof sessionCarbon);
+                this.sessionCarbon.textContent = `${sessionCarbon.toFixed(2)}g`;
+            }
+        } catch (error) {
+            console.error('❌ updateCarbonDisplay error:', error);
+            console.error('❌ Error stack:', error.stack);
         }
 
         // Update carbon indicator color
