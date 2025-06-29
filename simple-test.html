@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Test - EcoLearn Student</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .success { 
+            background: rgba(40, 167, 69, 0.8); 
+            border: 2px solid #28a745;
+        }
+        .info { 
+            background: rgba(23, 162, 184, 0.8); 
+            border: 2px solid #17a2b8;
+        }
+        .warning { 
+            background: rgba(255, 193, 7, 0.8); 
+            border: 2px solid #ffc107;
+            color: #212529;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        button:hover { 
+            background: #218838; 
+            transform: translateY(-2px);
+        }
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .test-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        #console-output {
+            background: rgba(0,0,0,0.8);
+            color: #0f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            border: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Simple Student Page Test</h1>
+        
+        <div class="status success">
+            ✅ This page loaded successfully without any imports!
+        </div>
+        
+        <div class="status info">
+            📍 Current URL: <span id="current-url"></span>
+        </div>
+        
+        <div class="test-grid">
+            <div class="test-card">
+                <h3>🔗 Navigation Test</h3>
+                <button onclick="testRedirect()">Test Redirect to Auth</button>
+                <button onclick="testRedirectHome()">Test Redirect to Home</button>
+                <div id="nav-status" class="status info">Ready to test navigation</div>
+            </div>
+            
+            <div class="test-card">
+                <h3>📦 Import Test</h3>
+                <button onclick="testSharedImport()">Test Shared Library Import</button>
+                <div id="import-status" class="status info">Ready to test imports</div>
+            </div>
+            
+            <div class="test-card">
+                <h3>💾 Storage Test</h3>
+                <button onclick="testLocalStorage()">Test localStorage</button>
+                <button onclick="checkAuthData()">Check Auth Data</button>
+                <div id="storage-status" class="status info">Ready to test storage</div>
+            </div>
+            
+            <div class="test-card">
+                <h3>🎯 Mock Student Dashboard</h3>
+                <button onclick="showMockDashboard()">Show Mock Dashboard</button>
+                <div id="dashboard-status" class="status info">Ready to show dashboard</div>
+            </div>
+        </div>
+        
+        <div class="test-card">
+            <h3>📋 Console Output</h3>
+            <div id="console-output"></div>
+            <button onclick="clearConsole()">Clear Console</button>
+        </div>
+    </div>
+
+    <script>
+        // Console capture
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        function addToConsole(type, ...args) {
+            const output = document.getElementById('console-output');
+            const timestamp = new Date().toLocaleTimeString();
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            output.textContent += `[${timestamp}] ${type}: ${message}\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        console.log = (...args) => {
+            originalLog(...args);
+            addToConsole('LOG', ...args);
+        };
+        
+        console.error = (...args) => {
+            originalError(...args);
+            addToConsole('ERROR', ...args);
+        };
+        
+        // Initialize
+        document.getElementById('current-url').textContent = window.location.href;
+        console.log('🎓 Simple test page loaded successfully');
+        console.log('📍 Current location:', window.location.href);
+        
+        // Test functions
+        function testRedirect() {
+            const statusDiv = document.getElementById('nav-status');
+            console.log('🔄 Testing redirect to auth page...');
+            statusDiv.className = 'status warning';
+            statusDiv.textContent = '⚠️ Redirecting to auth in 3 seconds...';
+            
+            setTimeout(() => {
+                console.log('🔗 Redirecting to auth page');
+                window.location.href = 'https://adbecolearn.github.io/ecolearn-auth/';
+            }, 3000);
+        }
+        
+        function testRedirectHome() {
+            const statusDiv = document.getElementById('nav-status');
+            console.log('🔄 Testing redirect to home page...');
+            statusDiv.className = 'status warning';
+            statusDiv.textContent = '⚠️ Redirecting to home in 3 seconds...';
+            
+            setTimeout(() => {
+                console.log('🔗 Redirecting to home page');
+                window.location.href = 'https://adbecolearn.github.io/ecolearn-home/';
+            }, 3000);
+        }
+        
+        async function testSharedImport() {
+            const statusDiv = document.getElementById('import-status');
+            try {
+                console.log('📦 Testing shared library import...');
+                statusDiv.className = 'status info';
+                statusDiv.textContent = 'Importing shared libraries...';
+                
+                const sharedModule = await import('https://adbecolearn.github.io/ecolearn-shared/index.js');
+                console.log('✅ Shared module imported:', sharedModule);
+                
+                statusDiv.className = 'status success';
+                statusDiv.textContent = '✅ Shared libraries imported successfully!';
+                
+            } catch (error) {
+                console.error('❌ Import failed:', error);
+                statusDiv.className = 'status warning';
+                statusDiv.textContent = `❌ Import failed: ${error.message}`;
+            }
+        }
+        
+        function testLocalStorage() {
+            const statusDiv = document.getElementById('storage-status');
+            try {
+                console.log('💾 Testing localStorage...');
+                
+                // Test write
+                localStorage.setItem('test-key', 'test-value');
+                const value = localStorage.getItem('test-key');
+                
+                console.log('✅ localStorage working, test value:', value);
+                statusDiv.className = 'status success';
+                statusDiv.textContent = '✅ localStorage working correctly!';
+                
+            } catch (error) {
+                console.error('❌ localStorage failed:', error);
+                statusDiv.className = 'status warning';
+                statusDiv.textContent = `❌ localStorage failed: ${error.message}`;
+            }
+        }
+        
+        function checkAuthData() {
+            const statusDiv = document.getElementById('storage-status');
+            console.log('🔍 Checking auth data in localStorage...');
+            
+            const token = localStorage.getItem('ecolearn_token');
+            const user = localStorage.getItem('ecolearn_user');
+            
+            console.log('🎫 Token:', token ? 'Found' : 'Not found');
+            console.log('👤 User data:', user ? 'Found' : 'Not found');
+            
+            if (token || user) {
+                statusDiv.className = 'status success';
+                statusDiv.textContent = `✅ Auth data found! Token: ${token ? 'Yes' : 'No'}, User: ${user ? 'Yes' : 'No'}`;
+            } else {
+                statusDiv.className = 'status info';
+                statusDiv.textContent = 'ℹ️ No auth data found in localStorage';
+            }
+        }
+        
+        function showMockDashboard() {
+            const statusDiv = document.getElementById('dashboard-status');
+            console.log('🎯 Showing mock student dashboard...');
+            
+            statusDiv.className = 'status success';
+            statusDiv.innerHTML = `
+                <h4>📊 Mock Student Dashboard</h4>
+                <p><strong>Name:</strong> Test Student</p>
+                <p><strong>Email:</strong> test@digitalbdg.ac.id</p>
+                <p><strong>Program:</strong> Digital Business</p>
+                <p><strong>Status:</strong> Active</p>
+                <p><strong>Current Page:</strong> Student Portal</p>
+            `;
+        }
+        
+        function clearConsole() {
+            document.getElementById('console-output').textContent = '';
+        }
+    </script>
+</body>
+</html>

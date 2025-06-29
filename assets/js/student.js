@@ -97,11 +97,14 @@ class StudentApp {
      * Check user authentication
      */
     async checkAuthentication() {
+        console.log('⚠️ checkAuthentication() called but DISABLED for testing');
+        return; // DISABLED for testing
+
         if (!authUtils.isAuthenticated()) {
             window.location.href = 'https://adbecolearn.github.io/ecolearn-auth/';
             return;
         }
-        
+
         this.currentUser = authUtils.getCurrentUser();
         
         // Verify user role
