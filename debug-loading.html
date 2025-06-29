@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Loading - EcoLearn Student</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .debug-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #218838; }
+        button:disabled { background: #6c757d; cursor: not-allowed; }
+        #console-output {
+            background: #000;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 4px solid #007bff;
+            background: #f8f9fa;
+        }
+        .step.completed {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .step.failed {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 EcoLearn Student Loading Debug</h1>
+    
+    <div class="debug-section">
+        <h2>📋 Debug Steps</h2>
+        <div id="step1" class="step">
+            <strong>Step 1:</strong> Test shared library accessibility
+            <div id="step1-status" class="status info">Ready to test</div>
+        </div>
+        <div id="step2" class="step">
+            <strong>Step 2:</strong> Test individual module imports
+            <div id="step2-status" class="status info">Waiting for step 1</div>
+        </div>
+        <div id="step3" class="step">
+            <strong>Step 3:</strong> Test authentication flow
+            <div id="step3-status" class="status info">Waiting for step 2</div>
+        </div>
+        <div id="step4" class="step">
+            <strong>Step 4:</strong> Simulate student app initialization
+            <div id="step4-status" class="status info">Waiting for step 3</div>
+        </div>
+        
+        <button onclick="runAllTests()">🚀 Run All Tests</button>
+        <button onclick="runStepByStep()">📝 Run Step by Step</button>
+        <button onclick="clearResults()">🗑️ Clear Results</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>📊 Test Results</h2>
+        <div id="test-results" class="status info">No tests run yet</div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>📋 Console Output</h2>
+        <div id="console-output"></div>
+        <button onclick="clearConsole()">Clear Console</button>
+    </div>
+
+    <script type="module">
+        // Capture console logs
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        function addToConsole(type, ...args) {
+            const output = document.getElementById('console-output');
+            const timestamp = new Date().toLocaleTimeString();
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            output.textContent += `[${timestamp}] ${type.toUpperCase()}: ${message}\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        console.log = (...args) => {
+            originalLog(...args);
+            addToConsole('log', ...args);
+        };
+        
+        console.error = (...args) => {
+            originalError(...args);
+            addToConsole('error', ...args);
+        };
+        
+        console.warn = (...args) => {
+            originalWarn(...args);
+            addToConsole('warn', ...args);
+        };
+        
+        // Test variables
+        let testResults = {
+            step1: null,
+            step2: null,
+            step3: null,
+            step4: null
+        };
+        
+        // Step 1: Test shared library accessibility
+        async function testStep1() {
+            console.log('🔄 Step 1: Testing shared library accessibility...');
+            const step = document.getElementById('step1');
+            const status = document.getElementById('step1-status');
+            
+            try {
+                status.className = 'status info';
+                status.textContent = 'Testing shared library URL...';
+                
+                // Test if shared library is accessible
+                const response = await fetch('https://adbecolearn.github.io/ecolearn-shared/index.js');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const content = await response.text();
+                if (!content.includes('EcoLearn Shared Libraries')) {
+                    throw new Error('Shared library content invalid');
+                }
+                
+                console.log('✅ Step 1: Shared library accessible');
+                step.className = 'step completed';
+                status.className = 'status success';
+                status.textContent = '✅ Shared library is accessible';
+                testResults.step1 = true;
+                return true;
+                
+            } catch (error) {
+                console.error('❌ Step 1 failed:', error);
+                step.className = 'step failed';
+                status.className = 'status error';
+                status.textContent = `❌ Failed: ${error.message}`;
+                testResults.step1 = false;
+                return false;
+            }
+        }
+        
+        // Step 2: Test individual module imports
+        async function testStep2() {
+            console.log('🔄 Step 2: Testing module imports...');
+            const step = document.getElementById('step2');
+            const status = document.getElementById('step2-status');
+            
+            if (!testResults.step1) {
+                status.className = 'status warning';
+                status.textContent = '⚠️ Skipped: Step 1 failed';
+                return false;
+            }
+            
+            try {
+                status.className = 'status info';
+                status.textContent = 'Importing shared modules...';
+                
+                // Import shared library
+                const sharedModule = await import('https://adbecolearn.github.io/ecolearn-shared/index.js');
+                console.log('✅ Shared module imported:', Object.keys(sharedModule));
+                
+                // Test specific exports
+                const requiredExports = ['initEcoLearn', 'carbonTracker', 'apiService', 'authUtils', 'config'];
+                const missingExports = [];
+                
+                for (const exportName of requiredExports) {
+                    if (!(exportName in sharedModule)) {
+                        missingExports.push(exportName);
+                    }
+                }
+                
+                if (missingExports.length > 0) {
+                    throw new Error(`Missing exports: ${missingExports.join(', ')}`);
+                }
+                
+                console.log('✅ Step 2: All required exports available');
+                step.className = 'step completed';
+                status.className = 'status success';
+                status.textContent = '✅ All modules imported successfully';
+                testResults.step2 = true;
+                
+                // Store for next steps
+                window.testSharedModule = sharedModule;
+                return true;
+                
+            } catch (error) {
+                console.error('❌ Step 2 failed:', error);
+                step.className = 'step failed';
+                status.className = 'status error';
+                status.textContent = `❌ Failed: ${error.message}`;
+                testResults.step2 = false;
+                return false;
+            }
+        }
+        
+        // Step 3: Test authentication flow
+        async function testStep3() {
+            console.log('🔄 Step 3: Testing authentication flow...');
+            const step = document.getElementById('step3');
+            const status = document.getElementById('step3-status');
+            
+            if (!testResults.step2) {
+                status.className = 'status warning';
+                status.textContent = '⚠️ Skipped: Step 2 failed';
+                return false;
+            }
+            
+            try {
+                status.className = 'status info';
+                status.textContent = 'Testing authentication utilities...';
+                
+                const { authUtils } = window.testSharedModule;
+                
+                // Test authentication methods
+                const isAuth = authUtils.isAuthenticated();
+                console.log('🔐 Authentication status:', isAuth);
+                
+                const currentUser = authUtils.getCurrentUser();
+                console.log('👤 Current user:', currentUser);
+                
+                const token = authUtils.getToken();
+                console.log('🎫 Token status:', token ? 'Present' : 'None');
+                
+                console.log('✅ Step 3: Authentication flow tested');
+                step.className = 'step completed';
+                status.className = 'status success';
+                status.textContent = `✅ Auth tested (Authenticated: ${isAuth})`;
+                testResults.step3 = true;
+                return true;
+                
+            } catch (error) {
+                console.error('❌ Step 3 failed:', error);
+                step.className = 'step failed';
+                status.className = 'status error';
+                status.textContent = `❌ Failed: ${error.message}`;
+                testResults.step3 = false;
+                return false;
+            }
+        }
+        
+        // Step 4: Simulate student app initialization
+        async function testStep4() {
+            console.log('🔄 Step 4: Simulating student app initialization...');
+            const step = document.getElementById('step4');
+            const status = document.getElementById('step4-status');
+
+            if (!testResults.step3) {
+                status.className = 'status warning';
+                status.textContent = '⚠️ Skipped: Step 3 failed';
+                return false;
+            }
+
+            try {
+                status.className = 'status info';
+                status.textContent = 'Simulating student app init...';
+
+                const { initEcoLearn, carbonTracker, config } = window.testSharedModule;
+
+                // Initialize EcoLearn like student.js does
+                console.log('🔄 Initializing EcoLearn...');
+                const ecolearn = await initEcoLearn({
+                    carbonTracking: true,
+                    performanceMonitoring: true,
+                    debugMode: config.isDevelopment()
+                });
+
+                console.log('✅ EcoLearn initialized:', ecolearn);
+
+                // Test carbon tracking
+                carbonTracker.track('debug_test', { test: true });
+                console.log('🌱 Carbon tracking test completed');
+
+                // Test metrics
+                const metrics = carbonTracker.getMetrics();
+                console.log('📊 Carbon metrics:', metrics);
+
+                console.log('✅ Step 4: Student app simulation successful');
+                step.className = 'step completed';
+                status.className = 'status success';
+                status.textContent = '✅ Student app would initialize successfully';
+                testResults.step4 = true;
+                return true;
+
+            } catch (error) {
+                console.error('❌ Step 4 failed:', error);
+                step.className = 'step failed';
+                status.className = 'status error';
+                status.textContent = `❌ Failed: ${error.message}`;
+                testResults.step4 = false;
+                return false;
+            }
+        }
+
+        // Run all tests
+        window.runAllTests = async () => {
+            console.log('🚀 Starting all tests...');
+
+            const success1 = await testStep1();
+            if (success1) {
+                const success2 = await testStep2();
+                if (success2) {
+                    const success3 = await testStep3();
+                    if (success3) {
+                        await testStep4();
+                    }
+                }
+            }
+
+            updateTestResults();
+        };
+
+        // Run step by step
+        window.runStepByStep = async () => {
+            console.log('📝 Running step by step...');
+
+            if (confirm('Run Step 1: Test shared library accessibility?')) {
+                await testStep1();
+                if (testResults.step1 && confirm('Run Step 2: Test module imports?')) {
+                    await testStep2();
+                    if (testResults.step2 && confirm('Run Step 3: Test authentication?')) {
+                        await testStep3();
+                        if (testResults.step3 && confirm('Run Step 4: Simulate student app?')) {
+                            await testStep4();
+                        }
+                    }
+                }
+            }
+
+            updateTestResults();
+        };
+
+        // Update test results summary
+        function updateTestResults() {
+            const resultsDiv = document.getElementById('test-results');
+            const passed = Object.values(testResults).filter(r => r === true).length;
+            const failed = Object.values(testResults).filter(r => r === false).length;
+            const total = Object.values(testResults).filter(r => r !== null).length;
+
+            if (total === 0) {
+                resultsDiv.className = 'status info';
+                resultsDiv.textContent = 'No tests run yet';
+            } else if (failed === 0) {
+                resultsDiv.className = 'status success';
+                resultsDiv.textContent = `✅ All tests passed (${passed}/${total})`;
+            } else {
+                resultsDiv.className = 'status error';
+                resultsDiv.textContent = `❌ ${failed} test(s) failed, ${passed} passed (${total} total)`;
+            }
+        }
+
+        // Clear functions
+        window.clearResults = () => {
+            testResults = { step1: null, step2: null, step3: null, step4: null };
+
+            // Reset all steps
+            for (let i = 1; i <= 4; i++) {
+                const step = document.getElementById(`step${i}`);
+                const status = document.getElementById(`step${i}-status`);
+                step.className = 'step';
+                status.className = 'status info';
+                status.textContent = i === 1 ? 'Ready to test' : `Waiting for step ${i-1}`;
+            }
+
+            updateTestResults();
+            console.log('🗑️ Results cleared');
+        };
+
+        window.clearConsole = () => {
+            document.getElementById('console-output').textContent = '';
+        };
+
+        // Auto-start basic test
+        console.log('🔍 EcoLearn Student Loading Debug initialized');
+        console.log('📋 Ready to test. Click "Run All Tests" to start.');
+    </script>
+</body>
+</html>
