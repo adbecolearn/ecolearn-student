@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Shared Libraries - EcoLearn</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #218838; }
+        #console-output {
+            background: #000;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 EcoLearn Shared Libraries Test</h1>
+    
+    <div class="test-section">
+        <h2>📦 Import Status</h2>
+        <div id="import-status" class="status info">Testing imports...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔧 Library Functions Test</h2>
+        <button onclick="testInitEcoLearn()">Test initEcoLearn</button>
+        <button onclick="testCarbonTracker()">Test carbonTracker</button>
+        <button onclick="testApiService()">Test apiService</button>
+        <button onclick="testAuthUtils()">Test authUtils</button>
+        <button onclick="testConfig()">Test config</button>
+        <div id="function-status" class="status info">Click buttons to test functions</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>📱 Student Page Simulation</h2>
+        <button onclick="simulateStudentInit()">Simulate Student Page Init</button>
+        <div id="simulation-status" class="status info">Ready to simulate</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>📋 Console Output</h2>
+        <div id="console-output"></div>
+        <button onclick="clearConsole()">Clear Console</button>
+    </div>
+
+    <script type="module">
+        // Capture console logs
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        function addToConsole(type, ...args) {
+            const output = document.getElementById('console-output');
+            const timestamp = new Date().toLocaleTimeString();
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            output.textContent += `[${timestamp}] ${type.toUpperCase()}: ${message}\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        console.log = (...args) => {
+            originalLog(...args);
+            addToConsole('log', ...args);
+        };
+        
+        console.error = (...args) => {
+            originalError(...args);
+            addToConsole('error', ...args);
+        };
+        
+        console.warn = (...args) => {
+            originalWarn(...args);
+            addToConsole('warn', ...args);
+        };
+        
+        // Global variables for testing
+        let ecolearn, carbonTracker, apiService, authUtils, config;
+        
+        // Test imports
+        async function testImports() {
+            const statusDiv = document.getElementById('import-status');
+            
+            try {
+                console.log('🔄 Starting import test...');
+                statusDiv.className = 'status info';
+                statusDiv.textContent = 'Importing shared libraries...';
+                
+                const sharedModule = await import('https://adbecolearn.github.io/ecolearn-shared/index.js');
+                console.log('✅ Shared module imported:', sharedModule);
+                
+                // Extract exports
+                const { 
+                    initEcoLearn, 
+                    carbonTracker: ct, 
+                    apiService: api, 
+                    authUtils: auth, 
+                    config: cfg 
+                } = sharedModule;
+                
+                // Store globally for testing
+                window.initEcoLearn = initEcoLearn;
+                window.carbonTracker = carbonTracker = ct;
+                window.apiService = apiService = api;
+                window.authUtils = authUtils = auth;
+                window.config = config = cfg;
+                
+                console.log('✅ All exports extracted successfully');
+                statusDiv.className = 'status success';
+                statusDiv.textContent = '✅ All shared libraries imported successfully!';
+                
+            } catch (error) {
+                console.error('❌ Import failed:', error);
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `❌ Import failed: ${error.message}`;
+            }
+        }
+        
+        // Test functions
+        window.testInitEcoLearn = async () => {
+            const statusDiv = document.getElementById('function-status');
+            try {
+                console.log('🧪 Testing initEcoLearn...');
+                if (typeof window.initEcoLearn === 'function') {
+                    ecolearn = window.initEcoLearn({
+                        carbonTracking: true,
+                        performanceMonitoring: true,
+                        debugMode: true
+                    });
+                    console.log('✅ initEcoLearn success:', ecolearn);
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = '✅ initEcoLearn working!';
+                } else {
+                    throw new Error('initEcoLearn not available');
+                }
+            } catch (error) {
+                console.error('❌ initEcoLearn test failed:', error);
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `❌ initEcoLearn failed: ${error.message}`;
+            }
+        };
+        
+        window.testCarbonTracker = () => {
+            const statusDiv = document.getElementById('function-status');
+            try {
+                console.log('🧪 Testing carbonTracker...');
+                if (carbonTracker && typeof carbonTracker.track === 'function') {
+                    carbonTracker.track('test-action', { test: true });
+                    console.log('✅ carbonTracker.track() success');
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = '✅ carbonTracker working!';
+                } else {
+                    throw new Error('carbonTracker not available');
+                }
+            } catch (error) {
+                console.error('❌ carbonTracker test failed:', error);
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `❌ carbonTracker failed: ${error.message}`;
+            }
+        };
+        
+        window.testApiService = () => {
+            const statusDiv = document.getElementById('function-status');
+            try {
+                console.log('🧪 Testing apiService...');
+                if (apiService && typeof apiService.get === 'function') {
+                    console.log('✅ apiService.get() available');
+                    console.log('🔗 API Base URL:', apiService.baseURL || 'Not set');
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = '✅ apiService working!';
+                } else {
+                    throw new Error('apiService not available');
+                }
+            } catch (error) {
+                console.error('❌ apiService test failed:', error);
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `❌ apiService failed: ${error.message}`;
+            }
+        };
+        
+        window.testAuthUtils = () => {
+            const statusDiv = document.getElementById('function-status');
+            try {
+                console.log('🧪 Testing authUtils...');
+                if (authUtils && typeof authUtils.getToken === 'function') {
+                    const token = authUtils.getToken();
+                    console.log('✅ authUtils.getToken():', token ? 'Token found' : 'No token');
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = '✅ authUtils working!';
+                } else {
+                    throw new Error('authUtils not available');
+                }
+            } catch (error) {
+                console.error('❌ authUtils test failed:', error);
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `❌ authUtils failed: ${error.message}`;
+            }
+        };
+        
+        window.testConfig = () => {
+            const statusDiv = document.getElementById('function-status');
+            try {
+                console.log('🧪 Testing config...');
+                if (config && typeof config.isDevelopment === 'function') {
+                    const isDev = config.isDevelopment();
+                    console.log('✅ config.isDevelopment():', isDev);
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = '✅ config working!';
+                } else {
+                    throw new Error('config not available');
+                }
+            } catch (error) {
+                console.error('❌ config test failed:', error);
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `❌ config failed: ${error.message}`;
+            }
+        };
+        
+        window.simulateStudentInit = async () => {
+            const statusDiv = document.getElementById('simulation-status');
+            try {
+                console.log('🎓 Simulating student page initialization...');
+                statusDiv.className = 'status info';
+                statusDiv.textContent = 'Simulating student page init...';
+                
+                // Simulate exact student.js initialization
+                if (!window.initEcoLearn) {
+                    throw new Error('initEcoLearn not available - import failed');
+                }
+                
+                const studentEcolearn = window.initEcoLearn({
+                    carbonTracking: true,
+                    performanceMonitoring: true,
+                    debugMode: config ? config.isDevelopment() : true
+                });
+                
+                console.log('✅ Student page simulation successful:', studentEcolearn);
+                statusDiv.className = 'status success';
+                statusDiv.textContent = '✅ Student page would load successfully!';
+                
+            } catch (error) {
+                console.error('❌ Student simulation failed:', error);
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `❌ Student page would fail: ${error.message}`;
+            }
+        };
+        
+        window.clearConsole = () => {
+            document.getElementById('console-output').textContent = '';
+        };
+        
+        // Auto-start import test
+        testImports();
+    </script>
+</body>
+</html>
