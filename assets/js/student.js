@@ -4,20 +4,31 @@
  */
 
 // Import EcoLearn Shared Libraries
-import { 
-    initEcoLearn, 
-    carbonTracker, 
-    apiService, 
-    authUtils, 
-    config 
+import {
+    initEcoLearn,
+    carbonTracker,
+    apiService,
+    authUtils,
+    config
 } from 'https://adbecolearn.github.io/ecolearn-shared/index.js';
 
+// Debug: Log successful imports
+console.log('🎓 STUDENT PAGE DEBUG:');
+console.log('✅ Shared libraries imported successfully');
+console.log('📦 initEcoLearn:', typeof initEcoLearn);
+console.log('📦 carbonTracker:', typeof carbonTracker);
+console.log('📦 apiService:', typeof apiService);
+console.log('📦 authUtils:', typeof authUtils);
+console.log('📦 config:', typeof config);
+
 // Initialize EcoLearn
+console.log('🔄 Initializing EcoLearn...');
 const ecolearn = initEcoLearn({
     carbonTracking: true,
     performanceMonitoring: true,
     debugMode: config.isDevelopment()
 });
+console.log('✅ EcoLearn initialized:', ecolearn);
 
 // Student Portal App Class
 class StudentApp {
@@ -37,9 +48,20 @@ class StudentApp {
      */
     async init() {
         try {
-            // Check authentication
-            await this.checkAuthentication();
-            
+            // TEMPORARY: Skip authentication for testing
+            console.log('⚠️ SKIPPING AUTH CHECK FOR TESTING');
+            // await this.checkAuthentication();
+
+            // Mock user data for testing
+            this.currentUser = {
+                id: 'test-student-001',
+                email: 'test@digitalbdg.ac.id',
+                name: 'Test Student',
+                role: 'student',
+                program: 'Digital Business'
+            };
+            console.log('👤 Using mock user data:', this.currentUser);
+
             // Setup DOM references
             this.setupDOM();
             
