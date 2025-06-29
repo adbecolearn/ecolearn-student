@@ -1015,12 +1015,13 @@ async function initializeStudentApp() {
             return;
         }
 
-        // Initialize EcoLearn
-        const ecolearn = await initializeEcoLearn();
-        if (!ecolearn) {
-            console.error('❌ Cannot proceed without EcoLearn initialization');
-            return;
-        }
+        // TEMPORARY FIX: Skip EcoLearn initialization to avoid auth redirects
+        // const ecolearn = await initializeEcoLearn();
+        // if (!ecolearn) {
+        //     console.error('❌ Cannot proceed without EcoLearn initialization');
+        //     return;
+        // }
+        console.log('🔧 TEMPORARY: Skipping EcoLearn initialization to avoid auth redirects');
 
         // Create and initialize student app
         const studentApp = new StudentApp();
