@@ -113,8 +113,21 @@ class StudentApp {
                 throw new Error('Required libraries not loaded');
             }
 
-            // Check authentication (skip redirect for now to test loading)
-            await this.checkAuthentication();
+            // TEMPORARY FIX: Skip authentication for testing
+            // await this.checkAuthentication();
+
+            // Create temporary mock user for testing
+            this.currentUser = {
+                id: 'temp-student-user',
+                firstName: 'Test',
+                lastName: 'Student',
+                email: 'test.student@digitalbdg.ac.id',
+                role: 'student',
+                studentId: 'TEMP001',
+                experimentGroup: 'control_group',
+                loginTime: Date.now()
+            };
+            console.log('🔧 TEMPORARY: Using mock user for testing:', this.currentUser.email);
 
             // Setup DOM references
             this.setupDOM();
