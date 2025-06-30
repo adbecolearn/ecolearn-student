@@ -187,11 +187,13 @@ class StudentApp {
                 return;
             }
 
-            if (!authUtils.isAuthenticated()) {
-                console.log('🔐 User not authenticated, redirecting to auth...');
-                window.location.href = 'https://adbecolearn.github.io/ecolearn-auth/';
-                return;
-            }
+            // TEMPORARY FIX: Skip authentication check completely
+            // if (!authUtils.isAuthenticated()) {
+            //     console.log('🔐 User not authenticated, redirecting to auth...');
+            //     window.location.href = 'https://adbecolearn.github.io/ecolearn-auth/';
+            //     return;
+            // }
+            console.log('🔧 TEMPORARY: Skipping authUtils.isAuthenticated() check');
 
             this.currentUser = authUtils.getCurrentUser();
 
